@@ -25,6 +25,7 @@ public class UserController {
     }
     
     // API for add user or register user 
+    //http://localhost:8080/bookstore/user/add
     @PostMapping("/add")
     public ResponseEntity<ResponseDTO> registerUser(@Valid @RequestBody UserDto userDto) {
         ResponseDTO response = new ResponseDTO("User Registration Successfully Done",
@@ -33,6 +34,7 @@ public class UserController {
     }
 
     // API for get all user 
+    //http://localhost:8080/bookstore/user/get
     @GetMapping("/get")
     public ResponseEntity<ResponseDTO> getAllUser() {
         ResponseDTO response = new ResponseDTO("Users Fetched Successfully Done",
@@ -41,6 +43,7 @@ public class UserController {
     }
 
      // API for get user by id
+     //http://localhost:8080/bookstore/user/get/2
     @GetMapping("/get/{id}")
     public ResponseEntity<ResponseDTO> getByUserId(@PathVariable long id) {
         ResponseDTO response = new ResponseDTO("User Fetched Successfully Done",
@@ -48,6 +51,8 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // API for update user by id
+    //http://localhost:8080/bookstore/user/update/2
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseDTO> update(@PathVariable long id,
             @Valid @RequestBody UserDto userDto) {
@@ -56,6 +61,8 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // API for delete user by id
+    //http://localhost:8080/bookstore/user/delete/2
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO> deleteDetailById(@PathVariable long id) {
         ResponseDTO response = new ResponseDTO("User Data Deleted Successfully ",
@@ -64,6 +71,7 @@ public class UserController {
     }
 
      // API for login user 
+     //http://localhost:8080/bookstore/user/login
      @PostMapping("/login")
      public ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO loginDto) {
          ResponseDTO response = new ResponseDTO("User Login Successfully Done",
@@ -72,6 +80,7 @@ public class UserController {
      }
 
      // API for forgot password
+     //http://localhost:8080/bookstore/user/forgotpassword
      @PostMapping("/forgotpassword")
      public ResponseEntity<ResponseDTO> forgotPassword(@RequestBody LoginDTO loginDto) {
          ResponseDTO response = new ResponseDTO("To Update Password Token Generated Successfully",
@@ -80,6 +89,7 @@ public class UserController {
      }
 
      // API for reset password
+     //http://localhost:8080/bookstore/user/resetpassword/{token}
      @PutMapping("/resetpassword/{token}")
      public ResponseEntity<ResponseDTO> resetPassword(@RequestBody LoginDTO loginDto, @PathVariable String token) {
         ResponseDTO response = new ResponseDTO("Password Reset Done Successfully",

@@ -95,7 +95,7 @@ public class UserService implements IUserService {
         Optional<UserModel> data = userRepo.findByEmailId(loginDto.getEmail());
         if (data.isPresent()) {   
             if (passwordEncoder.matches(loginDto.getPassword(),data.get().getPassword())) {
-                String token = tokenUtil.createToken(loginDto.getEmail());
+                String token = tokenUtil.createToken(data.get().getUserID());
                 return token;
             } else {
                 throw new BookStoreException("Password is incorrect, Enter valid password");
@@ -109,7 +109,7 @@ public class UserService implements IUserService {
     public String forgotPassword(LoginDTO loginDto) {
         Optional<UserModel> data = userRepo.findByEmailId(loginDto.getEmail());
         if (data.isPresent()) {
-            String token = tokenUtil.createToken(loginDto.getEmail());
+            String token = tokenUtil.createToken(data.get().getUserID());
             return token;
         } else {
             throw new BookStoreException("User not found, Enter valid email");
@@ -119,8 +119,8 @@ public class UserService implements IUserService {
 
     @Override
     public UserModel resetPassword(LoginDTO loginDto, String token) {
-        String email = tokenUtil.decodeToken(token);
-        Optional<UserModel> data = userRepo.findByEmailId(email);
+        long id = tokenUtil.decodeToken(token);
+        Optional<UserModel> data = userRepo.findById(id);
         
         if (data.isPresent()) {
             String hashPassword= passwordEncoder.encode(loginDto.getPassword());

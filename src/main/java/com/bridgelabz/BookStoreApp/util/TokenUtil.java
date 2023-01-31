@@ -14,15 +14,14 @@ import com.auth0.jwt.interfaces.Verification;
 public class TokenUtil {
     
     private static final String TOKEN_SECRET = "Authorize";
-
-
-    public String createToken(String email)   {
+    
+    public String createToken(long id)   {
         try {
             //to set algorithm
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
 
             String token = JWT.create()
-                    .withClaim("user_id", email)
+                    .withClaim("user_id", id)
                     .sign(algorithm);
             return token;
 
@@ -35,9 +34,9 @@ public class TokenUtil {
         }
         return null;
     }
-    public String decodeToken(String token)
+    public int decodeToken(String token)
     {
-        String userid;
+        int userid;
         //for verification algorithm
         Verification verification = null;
         try {
@@ -50,7 +49,7 @@ public class TokenUtil {
         //to decode token
         DecodedJWT decodedjwt=jwtverifier.verify(token);
         Claim claim=decodedjwt.getClaim("user_id");
-        userid=claim.asString();
+        userid=claim.asInt();
         return userid;
 
     }

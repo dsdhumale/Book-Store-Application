@@ -26,8 +26,5 @@ public interface IUserService {
 
     public UserModel resetPassword(LoginDTO loginDto,String token);
 
-
-
-
     
 }

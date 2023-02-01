@@ -44,6 +44,7 @@ public class UserService implements IUserService {
             String hashPassword= passwordEncoder.encode(userDto.getPassword());
             userDto.setPassword(hashPassword);
             UserModel userModel = new UserModel(userDto);
+            emailSender.sendEmail(userModel.getEmail(), "Registration Done Successfully", "Welcome in Book Store application "+userModel.getFirstName());
             userRepo.save(userModel);
             return userModel;
         }
@@ -110,6 +111,7 @@ public class UserService implements IUserService {
         Optional<UserModel> data = userRepo.findByEmailId(loginDto.getEmail());
         if (data.isPresent()) {
             String token = tokenUtil.createToken(data.get().getUserID());
+            emailSender.sendEmail(loginDto.getEmail(), "Reset Password", "This is your token for reset password "+token);
             return token;
         } else {
             throw new BookStoreException("User not found, Enter valid email");

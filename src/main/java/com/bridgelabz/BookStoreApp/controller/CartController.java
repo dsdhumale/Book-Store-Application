@@ -45,16 +45,13 @@ public class CartController {
     }
 
     /* API for get perticular cart by user id 
-     * http://localhost:8080/bookstore/cart/getbyuser/2
+     * http://localhost:8080/bookstore/cart/getbyuser/4
      */
     @GetMapping("/getbyuser/{id}")
     public ResponseEntity<ResponseDTO> getByUserId(@PathVariable long id){
         ResponseDTO responseDTO = new ResponseDTO("Here are all the Cart Items..." , cartService.getByUserId(id));
         return new ResponseEntity<ResponseDTO>(responseDTO,HttpStatus.OK);
     }
-
-
-
 
     /* API for remove cart item by id
      * http://localhost:8080/bookstore/cart/remove/1

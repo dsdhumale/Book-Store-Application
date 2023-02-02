@@ -1,5 +1,7 @@
 package com.bridgelabz.BookStoreApp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,12 +16,15 @@ public class CartModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long cartId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.PERSIST},fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     public UserModel userModel;
 
-    @ManyToOne
+    
+    @ManyToOne(cascade = {CascadeType.PERSIST},fetch = FetchType.EAGER)
     @JoinColumn(name = "bookId")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     public BookModel bookModel;
 
     public int quantity;

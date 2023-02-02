@@ -15,11 +15,11 @@ import com.bridgelabz.BookStoreApp.repository.*;
 import com.bridgelabz.BookStoreApp.util.TokenUtil;
 
 @Service
-public class CartService implements ICartService{
-    
+public class CartService implements ICartService {
+
     @Autowired
     UserRepository userRepo;
-    
+
     @Autowired
     TokenUtil tokenUtil;
 
@@ -29,7 +29,6 @@ public class CartService implements ICartService{
     @Autowired
     CartRepository cartRepo;
 
-
     @Override
     public CartModel addBookToCart(CartDTO cartDTO, String token) {
         long userId = tokenUtil.decodeToken(token);
@@ -37,16 +36,17 @@ public class CartService implements ICartService{
         Optional<BookModel> bookData = bookRepo.findById(cartDTO.getBookId());
         if (userData.isPresent() && bookData.isPresent()) {
             if (bookData.get().getQuantity() >= cartDTO.getQuantity() && cartDTO.getQuantity() > 0) {
-                    double totalPrice = cartDTO.getQuantity() * bookData.get().getPrice();
-                    CartModel cartDetails = new CartModel(userData.get(), bookData.get(), cartDTO.getQuantity(), totalPrice);
-                    return cartRepo.save(cartDetails);
-                }
-                else{throw (new BookStoreException("Book Out Of Stock"));}
-            }else{throw (new BookStoreException("Record not Found"));}
+                double totalPrice = cartDTO.getQuantity() * bookData.get().getPrice();
+                CartModel cartDetails = new CartModel(userData.get(), bookData.get(), cartDTO.getQuantity(),
+                        totalPrice);
+                return cartRepo.save(cartDetails);
+            } else {
+                throw (new BookStoreException("Book Out Of Stock"));
+            }
+        } else {
+            throw (new BookStoreException("Record not Found"));
+        }
     }
-    
-
-
 
     @Override
     public List<CartModel> getAll() {
@@ -54,10 +54,10 @@ public class CartService implements ICartService{
         return cartDetailsModelList;
     }
 
-
     @Override
     public CartModel getById(long id) {
-        return cartRepo.findById(id).orElseThrow(() -> new BookStoreException("Book  with id " + id + " does not exist in database..!"));
+        return cartRepo.findById(id)
+                .orElseThrow(() -> new BookStoreException("Book  with id " + id + " does not exist in database..!"));
     }
 
     @Override
@@ -65,16 +65,15 @@ public class CartService implements ICartService{
         long userId = tokenUtil.decodeToken(token);
         UserModel userRegistrationModule = userRepo.findById(userId).get();
         Optional<CartModel> cart = cartRepo.findById(id);
-        if (cart.isPresent() && userRegistrationModule != null){
+        if (cart.isPresent() && userRegistrationModule != null) {
             cartRepo.deleteById(id);
             return cart.get();
         }
         throw (new BookStoreException("Record not Found"));
     }
 
-
     @Override
-    public CartModel updateQuantity(String token, CartDTO cartDTO, long id) throws BookStoreException  {
+    public CartModel updateQuantity(String token, CartDTO cartDTO, long id) throws BookStoreException {
         long userId = tokenUtil.decodeToken(token);
         UserModel user = userRepo.findById(userId).get();
         if (user != null) {
@@ -89,17 +88,14 @@ public class CartService implements ICartService{
         }
     }
 
-
     @Override
-    public CartModel getByUserId(long id) {
-        CartModel cart = cartRepo.findByUserId(id);
+    public List<CartModel> getByUserId(long id) {
+        List<CartModel> cart = cartRepo.findByUserId(id);
         if (cart != null) {
             return cart;
         } else {
-            throw new BookStoreException("For given user id " +id +" data not found ");
+            throw new BookStoreException("For given user id " + id + " data not found ");
         }
     }
 
-
-    
 }

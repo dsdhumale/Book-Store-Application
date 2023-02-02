@@ -82,7 +82,7 @@ public class BookController {
 
     /**
      * API for Update book price
-     * http://localhost:8080/bbookstore/book/updateprice/2?price=1000
+     * http://localhost:8080/bookstore/book/updateprice/2?price=1000
      */
     @PutMapping("/updateprice/{id}")
     public ResponseEntity<ResponseDTO> updatePrice(@RequestHeader(name = "Authorization") String token,@PathVariable long id, @RequestParam int price) {

@@ -24,15 +24,13 @@ public class UserService implements IUserService {
     UserRepository userRepo;
 
     @Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     TokenUtil tokenUtil;
 
     @Autowired
     EmailSenderUtil emailSender;
-
-
 
     @Override
     public UserModel registerUser(@Valid UserDto userDto) {
@@ -41,10 +39,11 @@ public class UserService implements IUserService {
         if (data.isPresent()) {
             throw new BookStoreException("User Email ID already registered, Please enter another one");
         } else {
-            String hashPassword= passwordEncoder.encode(userDto.getPassword());
+            String hashPassword = passwordEncoder.encode(userDto.getPassword());
             userDto.setPassword(hashPassword);
             UserModel userModel = new UserModel(userDto);
-            emailSender.sendEmail(userModel.getEmail(), "Registration Done Successfully", "Welcome in Book Store application "+userModel.getFirstName());
+            // emailSender.sendEmail(userModel.getEmail(), "Registration Done Successfully",
+            // "Welcome in Book Store application "+userModel.getFirstName());
             userRepo.save(userModel);
             return userModel;
         }
@@ -75,7 +74,7 @@ public class UserService implements IUserService {
         userData.setFirstName(userDto.getFirstName());
         userData.setLastName(userDto.getLastName());
         userData.setEmail(userDto.getEmail());
-        String hashPassword= passwordEncoder.encode(userDto.getPassword());
+        String hashPassword = passwordEncoder.encode(userDto.getPassword());
         userData.setPassword(hashPassword);
         return userRepo.save(userData);
     }
@@ -94,8 +93,8 @@ public class UserService implements IUserService {
     @Override
     public String loginUser(LoginDTO loginDto) {
         Optional<UserModel> data = userRepo.findByEmailId(loginDto.getEmail());
-        if (data.isPresent()) {   
-            if (passwordEncoder.matches(loginDto.getPassword(),data.get().getPassword())) {
+        if (data.isPresent()) {
+            if (passwordEncoder.matches(loginDto.getPassword(), data.get().getPassword())) {
                 String token = tokenUtil.createToken(data.get().getUserID());
                 return token;
             } else {
@@ -111,7 +110,8 @@ public class UserService implements IUserService {
         Optional<UserModel> data = userRepo.findByEmailId(loginDto.getEmail());
         if (data.isPresent()) {
             String token = tokenUtil.createToken(data.get().getUserID());
-            emailSender.sendEmail(loginDto.getEmail(), "Reset Password", "This is your token for reset password "+token);
+            emailSender.sendEmail(loginDto.getEmail(), "Reset Password",
+                    "This is your token for reset password " + token);
             return token;
         } else {
             throw new BookStoreException("User not found, Enter valid email");
@@ -123,15 +123,15 @@ public class UserService implements IUserService {
     public UserModel resetPassword(LoginDTO loginDto, String token) {
         long id = tokenUtil.decodeToken(token);
         Optional<UserModel> data = userRepo.findById(id);
-        
+
         if (data.isPresent()) {
-            String hashPassword= passwordEncoder.encode(loginDto.getPassword());
+            String hashPassword = passwordEncoder.encode(loginDto.getPassword());
             data.get().setPassword(hashPassword);
             return userRepo.save(data.get());
         } else {
             throw new BookStoreException("Invalid token");
         }
-        
+
     }
 
 }

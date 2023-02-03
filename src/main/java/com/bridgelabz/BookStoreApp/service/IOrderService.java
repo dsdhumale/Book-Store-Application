@@ -15,4 +15,8 @@ public interface IOrderService {
 
     public List<OrderModel> getByUserId(String token);
 
+    public String deleteById(String token, long id);
+
+	public OrderModel updateOrder(long id, OrderDTO orderDto);
+
 }

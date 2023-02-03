@@ -58,4 +58,26 @@ public class OrderController {
                 orderService.getByUserId(token));
         return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.OK);
     }
+
+    /*
+     * API for delete perticular order by order id
+     * http://localhost:8080/bookstore/order/delete/2
+     */
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseDTO> deleteById(@RequestHeader(name = "Authorization") String token,@PathVariable long id) {
+        ResponseDTO responseDTO = new ResponseDTO("Order Deleted Successfully",
+                orderService.deleteById(token,id));
+        return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.OK);
+    }
+
+    /*
+     * API for update order by id
+     * http://localhost:8080/bookstore/order/update/1
+     */
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseDTO> updateOrder(@PathVariable long id,@RequestBody OrderDTO orderDto ) {
+        ResponseDTO responseDTO = new ResponseDTO("Order Successfully cancelled", orderService.updateOrder(id,orderDto));
+        return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.ACCEPTED);
+    }
+
 }

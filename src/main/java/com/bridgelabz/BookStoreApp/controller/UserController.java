@@ -11,7 +11,7 @@ import com.bridgelabz.BookStoreApp.dto.UserDto;
 import com.bridgelabz.BookStoreApp.service.IUserService;
 
 import jakarta.validation.Valid;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/bookstore/user")
 public class UserController {

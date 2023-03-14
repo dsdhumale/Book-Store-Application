@@ -40,25 +40,18 @@ public class OrderService implements IOrderService {
     EmailSenderUtil emailSender;
 
     @Override
-    public OrderModel placeOrder(OrderDTO orderDto) {
-        UserModel user = userRepo.findById(orderDto.getUser())
+    public OrderModel placeOrder(OrderDTO orderDto, String token) {
+        long userId = tokenUtil.decodeToken(token);
+        UserModel user = userRepo.findById(userId)
                 .orElseThrow(() -> new BookStoreException("User not found"));
-        BookModel book = bookRepo.findById(orderDto.getBook())
-                .orElseThrow(() -> new BookStoreException("book not found"));
-        if (book.getQuantity() >= orderDto.getQuantity()) {
-            double price = orderDto.getQuantity() * book.getPrice();
-            LocalDate orderDate = LocalDate.now();
-            OrderModel order = new OrderModel(orderDate, price, orderDto.getQuantity(), orderDto.getAddress(), user,
-                    book, false);
-            OrderModel orderData = orderRepo.save(order);
-            long cart = cartRepo.findByCartUser(orderDto.getUser());
-            cartRepo.deleteById(cart);
-            emailSender.sendEmail(user.getEmail(), "Order Placed",
-                    "Your order placed successfully and order id is " + orderData.getOrderId());
-            return orderData;
-        } else {
-            throw new BookStoreException("Out of Stock");
-        }
+        LocalDate orderDate = LocalDate.now();
+        OrderModel order = new OrderModel(orderDate, orderDto.getPrice(), orderDto.getQuantity(), orderDto.getAddress(),
+                user, orderDto.getBook(), false);
+        OrderModel orderData = orderRepo.save(order);
+        emailSender.sendEmail(user.getEmail(), "Order Placed",
+                "Your order placed successfully and order id is " + orderData.getOrderId());
+        return orderData;
+
     }
 
     @Override
@@ -87,38 +80,4 @@ public class OrderService implements IOrderService {
         }
     }
 
-    @Override
-    public String deleteById(String token, long id){
-        long userId = tokenUtil.decodeToken(token);
-        UserModel user = userRepo.findById(userId).orElseThrow(() -> new BookStoreException("User not found"));
-        OrderModel order = orderRepo.findById(id).orElseThrow(() -> new BookStoreException("Order not found"));
-        orderRepo.deleteById(id);
-        return "Order id " + id +" deleted successfully";
-    }
-
-    @Override
-    public OrderModel updateOrder(long id, OrderDTO orderDto){
-        UserModel user = userRepo.findById(orderDto.getUser())
-                .orElseThrow(() -> new BookStoreException("User not found"));
-        BookModel book = bookRepo.findById(orderDto.getBook())
-                .orElseThrow(() -> new BookStoreException("book not found"));
-        OrderModel order = orderRepo.findById(id).orElseThrow(() -> new BookStoreException("Order not found"));
-        if (book.getQuantity() >= orderDto.getQuantity()) {
-            double price = orderDto.getQuantity() * book.getPrice();
-            order.setAddress(orderDto.getAddress());
-            order.setBook(book);
-            order.setPrice(price);
-            order.setUser(user);
-            order.setQuantity(orderDto.getQuantity());
-            OrderModel orderData = orderRepo.save(order);
-            emailSender.sendEmail(user.getEmail(), "Order Updated",
-                    "Your order updated successfully and order id is " + orderData.getOrderId());
-            return orderData;
-        } else {
-            throw new BookStoreException("Out of Stock");
-        }
-
-    }
-
 }
-

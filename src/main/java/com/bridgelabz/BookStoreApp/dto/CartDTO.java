@@ -7,4 +7,5 @@ import lombok.*;
 public class CartDTO {
     public long bookId;
     public int quantity;
+    public long cartId;
 }

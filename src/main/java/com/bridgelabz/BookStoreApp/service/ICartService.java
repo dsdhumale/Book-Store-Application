@@ -17,6 +17,12 @@ public interface ICartService {
 
     public CartModel updateQuantity(String token, CartDTO cartDTO, long id);
 
-    public List<CartModel> getByUserId(long id);
+    public List<CartModel> getByUserId(String token);
+
+    public CartModel addQuantity(String token, CartDTO cartDTO);
+
+    public CartModel reduceQuantity(String token, CartDTO cartDTO);
+
+    
 
 }

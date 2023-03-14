@@ -89,12 +89,53 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public List<CartModel> getByUserId(long id) {
-        List<CartModel> cart = cartRepo.findByUserId(id);
+    public List<CartModel> getByUserId(String token) {
+        long userId = tokenUtil.decodeToken(token);
+        List<CartModel> cart = cartRepo.findByUserId(userId);
         if (cart != null) {
             return cart;
         } else {
-            throw new BookStoreException("For given user id " + id + " data not found ");
+            throw new BookStoreException("For given user id " + userId + " data not found ");
+        }
+    }
+
+    @Override
+    public CartModel addQuantity(String token, CartDTO cartDTO) {
+        long userId = tokenUtil.decodeToken(token);
+        UserModel user = userRepo.findById(userId).get();
+        if (user != null) {
+            CartModel cart = cartRepo.findById(cartDTO.cartId).orElseThrow(() -> new BookStoreException("Cart not found"));
+            cart.setQuantity(cart.quantity + 1);
+            double totalPrice = cart.getQuantity() * cart.bookModel.getPrice();
+            cart.setTotalPrice(totalPrice);
+            return cartRepo.save(cart);
+
+        } else {
+            throw (new BookStoreException("User not Found"));
+        }
+    }
+
+    @Override
+    public CartModel reduceQuantity(String token, CartDTO cartDTO) {
+        long userId = tokenUtil.decodeToken(token);
+        UserModel user = userRepo.findById(userId).get();
+        if (user != null) {
+            CartModel cart = cartRepo.findById(cartDTO.cartId).orElseThrow(() -> new BookStoreException("Cart not found"));
+            if (cart.quantity > 1) {
+                cart.setQuantity(cart.quantity - 1);
+                double totalPrice = cart.getQuantity() * cart.bookModel.getPrice();
+                cart.setTotalPrice(totalPrice);
+                return cartRepo.save(cart);
+            } else {
+                cart.setQuantity(cart.quantity);
+                double totalPrice = cart.getQuantity() * cart.bookModel.getPrice();
+                cart.setTotalPrice(totalPrice);
+                return cartRepo.save(cart);
+
+            }
+
+        } else {
+            throw (new BookStoreException("User not Found"));
         }
     }
 

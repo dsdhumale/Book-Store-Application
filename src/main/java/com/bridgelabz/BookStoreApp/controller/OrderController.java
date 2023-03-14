@@ -22,8 +22,8 @@ public class OrderController {
      * http://localhost:8080/bookstore/order/place
      */
     @PostMapping("/place")
-    public ResponseEntity<ResponseDTO> placeOrder(@RequestBody OrderDTO orderDto) {
-        ResponseDTO responseDTO = new ResponseDTO("Order Placed Successfully", orderService.placeOrder(orderDto));
+    public ResponseEntity<ResponseDTO> placeOrder(@RequestBody OrderDTO orderDto,@RequestHeader(name = "Authorization") String token) {
+        ResponseDTO responseDTO = new ResponseDTO("Orderder Placed Successfully", orderService.placeOrder(orderDto,token));
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
@@ -33,7 +33,7 @@ public class OrderController {
      */
     @GetMapping("/getall")
     public ResponseEntity<ResponseDTO> getAll() {
-        ResponseDTO responseDTO = new ResponseDTO("Here are all the Order Items...", orderService.getAll());
+        ResponseDTO responseDTO = new ResponseDTO("Here are all the Cart Items...", orderService.getAll());
         return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.OK);
     }
 
@@ -54,30 +54,8 @@ public class OrderController {
      */
     @GetMapping("/getbyuser")
     public ResponseEntity<ResponseDTO> getByUserId(@RequestHeader(name = "Authorization") String token) {
-        ResponseDTO responseDTO = new ResponseDTO("Order fetched for particular user successfully",
+        ResponseDTO responseDTO = new ResponseDTO("Order fetched for perticular user successfully",
                 orderService.getByUserId(token));
         return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.OK);
     }
-
-    /*
-     * API for delete perticular order by order id
-     * http://localhost:8080/bookstore/order/delete/2
-     */
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> deleteById(@RequestHeader(name = "Authorization") String token,@PathVariable long id) {
-        ResponseDTO responseDTO = new ResponseDTO("Order Deleted Successfully",
-                orderService.deleteById(token,id));
-        return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.OK);
-    }
-
-    /*
-     * API for update order by id
-     * http://localhost:8080/bookstore/order/update/1
-     */
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseDTO> updateOrder(@PathVariable long id,@RequestBody OrderDTO orderDto ) {
-        ResponseDTO responseDTO = new ResponseDTO("Order Successfully cancelled", orderService.updateOrder(id,orderDto));
-        return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.ACCEPTED);
-    }
-
 }

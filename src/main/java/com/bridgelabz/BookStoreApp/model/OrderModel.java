@@ -28,14 +28,14 @@ public class OrderModel {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private UserModel user;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST},fetch = FetchType.EAGER)
-    @JoinColumn(name = "bookId")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private BookModel book;
+    // @ManyToOne(cascade = {CascadeType.PERSIST},fetch = FetchType.EAGER)
+    // @JoinColumn(name = "bookId")
+    // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private List<Object> book;
     private boolean cancel;
     
     public OrderModel(LocalDate orderDate, double price, int quantity, String address, UserModel user,
-            BookModel book, boolean cancel) {
+    List<Object> book, boolean cancel) {
         this.orderDate = orderDate;
         this.price = price;
         this.quantity = quantity;
